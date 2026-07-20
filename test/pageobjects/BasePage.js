@@ -1,30 +1,46 @@
+const WaitUtils = require('../utils/WaitUtils');
+
 class BasePage {
 
-   async click(element) {
-    await element.waitForDisplayed({ timeout: 20000 });
-    await element.waitForEnabled({ timeout: 20000 });
-    await element.click();
-}
+    async click(element) {
+        const webElement = await WaitUtils.waitForClickable(element);
+        await webElement.click();
+    }
 
-    async type(element, text) {
-    await element.waitForDisplayed({ timeout: 20000 });
-    await element.clearValue();
-    await element.setValue(text);
-}
+    async setValue(element, value) {
+        const webElement = await WaitUtils.waitForDisplayed(element);
+        await webElement.setValue(value);
+    }
 
     async getText(element) {
-        await element.waitForDisplayed({ timeout: 20000 });
-        return await element.getText();
+        const webElement = await WaitUtils.waitForDisplayed(element);
+        return await webElement.getText();
     }
 
-    async isDisplayed(element) {
-        return await element.isDisplayed();
+    async isDisplayed(element, timeout = 10000) {
+        try {
+            await element.waitForDisplayed({ timeout });
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 
-    async waitForElement(element) {
-        await element.waitForDisplayed();
+    async hideKeyboard() {
+        try {
+            await driver.hideKeyboard();
+        } catch (error) {
+            console.log('Keyboard is already hidden.');
+        }
     }
 
+    async launchApp() {
+        await driver.activateApp('com.extension.jindal_india');
+    }
+
+    async closeApp() {
+        await driver.terminateApp('com.extension.jindal_india');
+    }
 }
 
-module.exports = new BasePage();
+module.exports = BasePage;

@@ -2,44 +2,66 @@ const BasePage = require('./BasePage');
 
 class LoginPage extends BasePage {
 
-    async open() {
-        // placeholder for app-specific navigation/start action
-        // e.g. driver.launchApp() or deep link; left empty intentionally
-        return;
+    // Login Screen
+
+    get emailInput() {
+        return $('//android.widget.EditText[1]');
     }
 
-    
-    get emailTextbox() {
-    return $('id=com.extension.jindal_india:id/etEmail');
+    get passwordInput() {
+        return $('//android.widget.EditText[2]');
     }
 
-    get passwordTextbox() {
-    return $('android=new UiSelector().className("android.widget.EditText").instance(1)');
-    
+    get continueButton() {
+        return $('~Continue');
     }
 
-    get loginButton() {
-        return $('android=new UiSelector().description("Continue")');
+    // Success Popup
+
+    get successMessage() {
+        return $('~Login successfully!');
     }
 
-    async setEmail(email) {
-        await this.type(this.emailTextbox, email);
+    get okButton() {
+        return $('~OK');
     }
 
-    async setPassword(password) {
-        await this.type(this.passwordTextbox, password);
+    // Verification
+
+    async verifyLoginScreen() {
+        await this.emailInput.waitForDisplayed({ timeout: 10000 });
+        await expect(this.emailInput).toBeDisplayed();
+    }
+
+    // Actions
+
+    async enterEmail(email) {
+        await this.setValue(this.emailInput, email);
+    }
+
+    async enterPassword(password) {
+        await this.setValue(this.passwordInput, password);
+        await this.hideKeyboard();
     }
 
     async tapContinue() {
-        await this.click(this.loginButton);
+        await this.click(this.continueButton);
     }
 
     async login(email, password) {
-        if (email) await this.setEmail(email);
-        if (password) await this.setPassword(password);
+        await this.enterEmail(email);
+        await this.enterPassword(password);
         await this.tapContinue();
     }
 
+    async verifyLoginSuccessMessage() {
+        await this.successMessage.waitForDisplayed({ timeout: 10000 });
+        await expect(this.successMessage).toBeDisplayed();
+    }
+
+    async clickOk() {
+        await this.click(this.okButton);
+    }
 }
 
 module.exports = new LoginPage();

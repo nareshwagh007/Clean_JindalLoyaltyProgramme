@@ -1,19 +1,19 @@
-const { expect } = require('@wdio/globals')
-const LoginPage = require('../pageobjects/LoginPage')
+const { expect } = require('@wdio/globals');
 
-describe('Mobile Login', () => {
-    it('should open and perform login using mobile pageobject', async () => {
-        await LoginPage.open()
+describe('App Launch', () => {
 
-        // basic pre-condition: email textbox is present
-        await expect(LoginPage.emailTextbox).toBeExisting()
+    it('should launch the Jindal app successfully', async () => {
 
-        // perform login (replace with real creds when available)
-        await LoginPage.login('test@example.com', 'Password123')
+        // Wait for the app to load
+        await driver.pause(5000);
 
-        // post-login: at minimum ensure continue button is no longer displayed
-        // (adapt this assertion to your app's post-login element)
-        await expect(LoginPage.loginButton).not.toBeDisplayed()
-    })
-})
+        // Print the current package
+        const currentPackage = await driver.getCurrentPackage();
+        console.log("Current Package :", currentPackage);
 
+        // Verify the app is launched
+        await expect(currentPackage).toBe('com.extension.jindal_india');
+
+    });
+
+});
